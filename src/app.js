@@ -1,15 +1,21 @@
 const express = require("express");
 const responseMiddleware = require("./middlewares/response.middleware");
+const booksRoutes = require("./routes/books.routes");
 
 const app = express();
 
 app.use(express.json());
 app.use(responseMiddleware);
 
+
 // Health check (using unified template)
 app.get("/health", (req, res) => {
   return res.success({ status: "ok" }, "Service is healthy");
 });
+
+// API routes
+app.use("/api/books", booksRoutes);
+
 
 // 404 handler
 app.use((req, res) => {
