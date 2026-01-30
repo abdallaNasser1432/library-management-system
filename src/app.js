@@ -1,6 +1,8 @@
 const express = require("express");
 const responseMiddleware = require("./middlewares/response.middleware");
+
 const booksRoutes = require("./routes/books.routes");
+const borrowersRoutes = require("./routes/borrowers.routes");
 
 const app = express();
 
@@ -15,7 +17,7 @@ app.get("/health", (req, res) => {
 
 // API routes
 app.use("/api/books", booksRoutes);
-
+app.use("/api/borrowers", borrowersRoutes);
 
 // 404 handler
 app.use((req, res) => {
