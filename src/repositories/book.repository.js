@@ -59,6 +59,27 @@ class BookRepository {
 
     return q.orderBy("id", "desc").limit(limit).offset(offset);
   }
+
+  async decrementAvailableQuantity(trx, bookId) {
+  const [updated] = await trx("books")
+    .where({ id: bookId })
+    .andWhere("available_quantity", ">", 0)
+    .decrement("available_quantity", 1)
+    .update({ updated_at: trx.fn.now() })
+    .returning("*");
+
+  return updated || null; 
+}
+
+  async incrementAvailableQuantity(trx, bookId) {
+    const [updated] = await trx("books")
+      .where({ id: bookId })
+      .increment("available_quantity", 1)
+      .update({ updated_at: trx.fn.now() })
+      .returning("*");
+
+    return updated || null;
+  }
 }
 
 module.exports = new BookRepository();
