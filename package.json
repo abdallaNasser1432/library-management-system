@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "migrate:make": "knex --knexfile knexfile.js migrate:make",
+    "migrate:latest": "knex --knexfile knexfile.js migrate:latest",
+    "migrate:rollback": "knex --knexfile knexfile.js migrate:rollback"
   },
   "repository": {
     "type": "git",
@@ -21,7 +24,9 @@
   "homepage": "https://github.com/abdallaNasser1432/library-management-system#readme",
   "dependencies": {
     "dotenv": "^17.2.3",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "knex": "^3.1.0",
+    "pg": "^8.17.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"
