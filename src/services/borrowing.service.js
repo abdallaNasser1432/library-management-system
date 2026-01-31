@@ -10,19 +10,44 @@ class BorrowingService {
   async checkout(payload) {
     const bookId = Number(payload.book_id);
     const borrowerId = Number(payload.borrower_id);
-    const dueDate = payload.due_date;
+    const dueDateRaw = payload.due_date;
+    const borrowedAtRaw = payload.borrowed_at; // optional
 
-    if (!bookId || !borrowerId || !dueDate) {
+    if (!bookId || !borrowerId || !dueDateRaw) {
       throw new BadRequestError("Missing required fields");
     }
 
-    // check borrower Exsist
+    // Validate dates
+    const dueDate = new Date(dueDateRaw);
+    if (Number.isNaN(dueDate.getTime())) {
+      throw new BadRequestError("Invalid due_date");
+    }
+
+    let borrowedAtForValidation = new Date(); // default now for validation
+    let borrowedAtForInsert; // undefined unless provided
+
+    if (borrowedAtRaw !== undefined) {
+      const borrowedAt = new Date(borrowedAtRaw);
+      if (Number.isNaN(borrowedAt.getTime())) {
+        throw new BadRequestError("Invalid borrowed_at");
+      }
+
+      borrowedAtForValidation = borrowedAt;
+      borrowedAtForInsert = borrowedAt.toISOString();
+    }
+
+    // Business rule: due_date must be after borrowed_at (or after now if borrowed_at not provided)
+    if (dueDate <= borrowedAtForValidation) {
+      throw new BadRequestError("due_date must be after borrowed_at");
+    }
+
+    // check borrower exists
     const borrower = await borrowerRepo.findById(borrowerId);
     if (!borrower) throw new NotFoundError("Borrower not found");
 
     // start transaction: atomic operation
     return db.transaction(async (trx) => {
-      // try to decrement book quantitiy
+      // try to decrement book quantity
       const updatedBook = await bookRepo.decrementAvailableQuantity(trx, bookId);
       if (!updatedBook) {
         // we need to know if book not found or out of stock
@@ -32,15 +57,23 @@ class BorrowingService {
       }
 
       // insert borrowing
-      const borrowing = await borrowingRepo.create(trx, {
+      const createPayload = {
         book_id: bookId,
         borrower_id: borrowerId,
-        due_date: dueDate,
-      });
+        due_date: dueDate.toISOString(),
+      };
+
+      // Only set borrowed_at if provided; otherwise DB default (now()) will be used
+      if (borrowedAtForInsert) {
+        createPayload.borrowed_at = borrowedAtForInsert;
+      }
+
+      const borrowing = await borrowingRepo.create(trx, createPayload);
 
       return { borrowing, book: updatedBook, borrower };
     });
   }
+
 
   async returnBook(payload) {
     const borrowingId = Number(payload.borrowing_id);
