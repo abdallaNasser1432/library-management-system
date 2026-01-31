@@ -88,6 +88,11 @@ class BorrowingRepository {
     .orderBy("borrowings.due_date", "asc");
   }
 
+  async hasActiveByBookId(bookId) {
+    return db("borrowings")
+      .where({ book_id: bookId })
+      .first();
+  }
 }
 
 module.exports = new BorrowingRepository();
