@@ -3,10 +3,12 @@
  * @returns { Promise<void> }
  */
 exports.up = function (knex) {
-  return knex.schema.createTable("app_meta", (table) => {
+  return knex.schema.createTable("users", (table) => {
     table.increments("id").primary();
-    table.string("key").notNullable().unique();
-    table.string("value").notNullable();
+    table.string("name").notNullable();
+    table.string("email").notNullable().unique();
+    table.string("password_hash").notNullable();
+
     table.timestamps(true, true);
   });
 };
@@ -16,5 +18,5 @@ exports.up = function (knex) {
  * @returns { Promise<void> }
  */
 exports.down = function(knex) {
-  return knex.schema.dropTableIfExists("app_meta");
+  return knex.schema.dropTableIfExists("users");
 };
