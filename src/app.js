@@ -5,6 +5,7 @@ const booksRoutes = require("./routes/books.routes");
 const borrowersRoutes = require("./routes/borrowers.routes");
 const borrowingsRoutes = require("./routes/borrowings.routes");
 const reportsRoutes = require("./routes/reports.routes");
+const authRoutes = require("./routes/auth.routes");
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.get("/health", (req, res) => {
 });
 
 // API routes
+app.use("/api/auth", authRoutes);
 app.use("/api/books", booksRoutes);
 app.use("/api/borrowers", borrowersRoutes);
 app.use("/api/borrowings", borrowingsRoutes);
