@@ -134,10 +134,9 @@ class ReportService {
 
   async overdueLastMonthExport() {
     const { from, to } = this.getLastMonthRange();
-    const rows = await borrowingRepo.listByPeriod({ from, to });
+    const rows = await borrowingRepo.listByDueDatePeriod({ from, to });
 
     return rows
-      .filter((r) => new Date(r.due_date) >= new Date(from) && new Date(r.due_date) <= new Date(to))
       .filter((r) => !r.returned_at || new Date(r.returned_at) > new Date(r.due_date))
       .map((r) => ({
         borrowing_id: r.id,
