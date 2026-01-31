@@ -1,5 +1,6 @@
 const express = require("express");
 const borrowerService = require("../services/borrower.service");
+const authMiddleware = require("../middlewares/auth.middleware");
 
 const router = express.Router();
 
@@ -14,7 +15,7 @@ const parsePagination = (req) => {
 };
 
 // Create borrower
-router.post("/", async (req, res, next) => {
+router.post("/",authMiddleware, async (req, res, next) => {
   try {
     const borrower = await borrowerService.createBorrower(req.body);
     return res.success(borrower, "Borrower registered", 201);
@@ -46,7 +47,7 @@ router.get("/:id", async (req, res, next) => {
 });
 
 // Update borrower
-router.put("/:id", async (req, res, next) => {
+router.put("/:id",authMiddleware, async (req, res, next) => {
   try {
     const id = Number(req.params.id);
     const updated = await borrowerService.updateBorrower(id, req.body);
@@ -57,7 +58,7 @@ router.put("/:id", async (req, res, next) => {
 });
 
 // Delete borrower
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id",authMiddleware, async (req, res, next) => {
   try {
     const id = Number(req.params.id);
     await borrowerService.deleteBorrower(id);

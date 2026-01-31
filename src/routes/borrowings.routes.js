@@ -1,10 +1,11 @@
 const express = require("express");
 const borrowingService = require("../services/borrowing.service");
+const authMiddleware = require("../middlewares/auth.middleware");
 
 const router = express.Router();
 
 // Checkout a book
-router.post("/checkout", async (req, res, next) => {
+router.post("/checkout",authMiddleware, async (req, res, next) => {
   try {
     const result = await borrowingService.checkout(req.body);
     return res.success(result, "Book checked out", 201);
@@ -14,7 +15,7 @@ router.post("/checkout", async (req, res, next) => {
 });
 
 // Return a book
-router.post("/return", async (req, res, next) => {
+router.post("/return",authMiddleware, async (req, res, next) => {
   try {
     const result = await borrowingService.returnBook(req.body);
     return res.success(result, "Book returned");

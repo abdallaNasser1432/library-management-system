@@ -1,5 +1,6 @@
 const express = require("express");
 const bookService = require("../services/book.service");
+const authMiddleware = require("../middlewares/auth.middleware");
 
 const router = express.Router();
 
@@ -14,7 +15,7 @@ const parsePagination = (req) => {
 };
 
 // Create book
-router.post("/", async (req, res, next) => {
+router.post("/",authMiddleware, async (req, res, next) => {
   try {
     const book = await bookService.createBook(req.body);
     return res.success(book, "Book created", 201);
@@ -60,7 +61,7 @@ router.get("/:id", async (req, res, next) => {
 });
 
 // Update book
-router.put("/:id", async (req, res, next) => {
+router.put("/:id",authMiddleware, async (req, res, next) => {
   try {
     const id = Number(req.params.id);
     const updated = await bookService.updateBook(id, req.body);
@@ -71,7 +72,7 @@ router.put("/:id", async (req, res, next) => {
 });
 
 // Delete book
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id",authMiddleware, async (req, res, next) => {
   try {
     const id = Number(req.params.id);
     await bookService.deleteBook(id);

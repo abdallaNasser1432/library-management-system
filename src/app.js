@@ -1,5 +1,6 @@
 const express = require("express");
 const responseMiddleware = require("./middlewares/response.middleware");
+const authMiddleware = require("./middlewares/auth.middleware");
 
 const booksRoutes = require("./routes/books.routes");
 const borrowersRoutes = require("./routes/borrowers.routes");
@@ -23,7 +24,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/books", booksRoutes);
 app.use("/api/borrowers", borrowersRoutes);
 app.use("/api/borrowings", borrowingsRoutes);
-app.use("/api/reports", reportsRoutes);
+app.use("/api/reports",authMiddleware, reportsRoutes);
 
 // 404 handler
 app.use((req, res) => {
