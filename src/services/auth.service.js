@@ -45,7 +45,12 @@ class AuthService {
       throw new BadRequestError("Missing required fields");
     }
 
-    const user = await userRepo.findByEmail(email);
+    const normalizedEmail = String(email).trim().toLowerCase();
+    if (!normalizedEmail.includes("@") || !normalizedEmail.includes(".")) {
+      throw new BadRequestError("Invalid email format");
+    }
+
+    const user = await userRepo.findByEmail(normalizedEmail);
     if (!user) throw new NotFoundError("Invalid credentials");
 
     const ok = await bcrypt.compare(password, user.password_hash);
