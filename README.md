@@ -4,17 +4,18 @@ RESTful API built with Node.js, Express, and PostgreSQL for managing books, borr
 
 ## Features
 
-- Books CRUD, search, and pagination
-- Borrowers CRUD and pagination
-- Borrowing checkout/return with database transactions
-- Overdue borrowings listing
-- Borrowing analytics and export reports (CSV/XLSX)
-- Rate limiting applied to reports endpoints due to heavy export/analytics operations
-- Unified API response format and centralized error handling
+- **Book Management**: Complete CRUD operations for books with search capabilities
+- **Borrower Management**: Register, update, delete, and list borrowers with pagination
+- **Borrowing Workflow**: Checkout and return flows with transactional integrity
+- **Overdue Tracking**: Identify and list overdue borrowings
+- **Reporting & Exports**: Borrowing analytics and CSV/XLSX exports
+- **Rate Limiting**: Protection on heavy reports endpoints
+- **Authentication**: JWT-based access control for protected routes
+- **Error Handling**: Unified response format with centralized error handling
 
 ## Tech Stack
 
-- Node.js (CommonJS)
+- Node.js
 - Express
 - PostgreSQL
 - Knex (migrations)
@@ -46,27 +47,23 @@ cd library-management-system
 npm install
 ```
 
-4. Create a `.env` file (or copy `.env.example`) and update values:
+4. Configure environment variables:
 
-```
-PORT=3000
-
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=library_db
-DB_USER=postgres
-DB_PASSWORD=your_password
+```bash
+# Copy environment template
+cp env.example .env
+# Edit .env with your database credentials and settings
 ```
 
 ### 2) Database Setup
 
-1) Create the database (example):
+1. Create the database in your PostgreSQL Server:
 
 ```sql
 CREATE DATABASE library_db;
 ```
 
-2) Run migrations:
+2. Run migrations:
 
 ```bash
 npm run migrate:latest
@@ -88,6 +85,33 @@ npm start
 
 Server defaults to `http://localhost:3000` (or `PORT` from `.env`).
 
+## Configuration
+
+#### Environment Variables
+
+Create a `.env` file based on `.env.example`:
+
+```env
+# Database Configuration
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=library_db
+DB_USER=postgres
+DB_PASSWORD=your_password
+
+# Server Configuration
+PORT=3000
+NODE_ENV=development
+
+# JWT Configuration
+JWT_SECRET=your-super-secret-jwt-key
+JWT_EXPIRES_IN=1d
+
+# Rate Limiting
+RATE_LIMIT_WINDOW_MS=60000
+RATE_LIMIT_MAX_REQUESTS=10
+```
+
 ## API Overview
 
 Base URL: `/api`
@@ -95,6 +119,74 @@ Base URL: `/api`
 ### Health Check
 
 - `GET /health`
+
+### Auth
+
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+
+Notes:
+
+- Protected endpoints require `Authorization: Bearer <token>`.
+- Protected endpoints:
+  - Books: `POST /api/books`, `PUT /api/books/:id`, `DELETE /api/books/:id`
+  - Borrowers: `POST /api/borrowers`, `PUT /api/borrowers/:id`, `DELETE /api/borrowers/:id`
+  - Borrowings: `POST /api/borrowings/checkout`, `POST /api/borrowings/return`
+  - Reports: all `/api/reports/*` endpoints
+
+Examples:
+
+```http
+POST /api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Admin User",
+  "email": "admin@example.com",
+  "password": "Admin@12345"
+}
+```
+
+Register response (example):
+
+```json
+{
+  "success": true,
+  "message": "User registered",
+  "data": {
+    "id": 1,
+    "name": "Admin User",
+    "email": "admin@example.com"
+  }
+}
+```
+
+```http
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "Admin@12345"
+}
+```
+
+Login response (example):
+
+```json
+{
+  "success": true,
+  "message": "Login successful",
+  "data": {
+    "token": "<jwt_token>",
+    "user": {
+      "id": 1,
+      "name": "Admin User",
+      "email": "admin@example.com"
+    }
+  }
+}
+```
 
 ### Books
 
@@ -153,6 +245,8 @@ Notes:
   - Last-month exports (`/borrowings/overdue-last-month/export`, `/borrowings/last-month/export`): `csv`
 - CSV/XLSX responses are returned as downloadable files.
 - Rate limit: 10 requests per minute per IP for all `/api/reports` endpoints.
+- `RATE_LIMIT_WINDOW_MS` and `RATE_LIMIT_MAX_REQUESTS` are provided in `.env.example` for production configuration.
+- In this taske-home assignment, rate limits are defined inline in code for clarity and simplicity.
 
 ### Pagination
 

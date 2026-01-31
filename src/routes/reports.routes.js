@@ -5,6 +5,7 @@ const { reportsLimiter } = require("../middlewares/rateLimit.middleware");
 const router = express.Router();
 
 router.use(reportsLimiter);
+
 // Summary analytics
 router.get("/borrowings/summary", async (req, res, next) => {
   try {
