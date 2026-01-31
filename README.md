@@ -8,6 +8,8 @@ RESTful API built with Node.js, Express, and PostgreSQL for managing books, borr
 - Borrowers CRUD and pagination
 - Borrowing checkout/return with database transactions
 - Overdue borrowings listing
+- Borrowing analytics and export reports (CSV/XLSX)
+- Rate limiting applied to reports endpoints due to heavy export/analytics operations
 - Unified API response format and centralized error handling
 
 ## Tech Stack
@@ -24,17 +26,27 @@ RESTful API built with Node.js, Express, and PostgreSQL for managing books, borr
 - Node.js and npm
 - PostgreSQL
 
-### Installation
+### 1) Installation
+
+1. Clone the repository:
 
 ```bash
 git clone https://github.com/abdallaNasser1432/library-management-system.git
+```
+
+2. Move into the project folder:
+
+```bash
 cd library-management-system
+```
+
+3. Install dependencies:
+
+```bash
 npm install
 ```
 
-### Environment Variables
-
-Create a `.env` file (or copy `.env.example`) and update values:
+4. Create a `.env` file (or copy `.env.example`) and update values:
 
 ```
 PORT=3000
@@ -46,7 +58,7 @@ DB_USER=postgres
 DB_PASSWORD=your_password
 ```
 
-### Database Setup
+### 2) Database Setup
 
 1) Create the database (example):
 
@@ -60,7 +72,7 @@ CREATE DATABASE library_db;
 npm run migrate:latest
 ```
 
-### Run the Server
+### 3) Run the Server
 
 Development (watch mode):
 
@@ -125,6 +137,22 @@ Required fields:
 
 - Checkout: `book_id`, `borrower_id`, `due_date`
 - Return: `borrowing_id`
+
+### Reports
+
+- `GET /api/reports/borrowings/summary?from=&to=`
+- `GET /api/reports/borrowings/export?from=&to=&format=json|csv|xlsx`
+- `GET /api/reports/borrowings/overdue-last-month/export?format=csv|xlsx`
+- `GET /api/reports/borrowings/last-month/export?format=csv|xlsx`
+
+Notes:
+
+- `from` and `to` are required for summary/export and should be valid ISO 8601 dates.
+- Default formats:
+  - Period export (`/borrowings/export`): `json`
+  - Last-month exports (`/borrowings/overdue-last-month/export`, `/borrowings/last-month/export`): `csv`
+- CSV/XLSX responses are returned as downloadable files.
+- Rate limit: 10 requests per minute per IP for all `/api/reports` endpoints.
 
 ### Pagination
 
