@@ -55,6 +55,23 @@ class BorrowingRepository {
 
     return updated || null;
   }
+  
+  async listByPeriod({ from, to }) {
+  return db("borrowings")
+    .select(
+      "borrowings.*",
+      "books.title as book_title",
+      "books.author as book_author",
+      "books.isbn as book_isbn",
+      "borrowers.name as borrower_name",
+      "borrowers.email as borrower_email"
+    )
+    .join("books", "borrowings.book_id", "books.id")
+    .join("borrowers", "borrowings.borrower_id", "borrowers.id")
+    .whereBetween("borrowings.borrowed_at", [from, to])
+    .orderBy("borrowings.borrowed_at", "desc");
+  }
+
 }
 
 module.exports = new BorrowingRepository();
