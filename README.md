@@ -205,6 +205,32 @@ Required fields on create:
 - `shelf_location` (string)
 - `available_quantity` (number, optional, defaults to 0, must be >= 0)
 
+Notes:
+
+- Requires authentication for create/update/delete.
+- Supports pagination via `limit` and `offset`.
+- Search supports `title`, `author`, and `isbn` query parameters.
+
+Examples:
+
+```http
+POST /api/books
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "title": "Clean Code",
+  "author": "Robert C. Martin",
+  "isbn": "9780132350884",
+  "available_quantity": 3,
+  "shelf_location": "A-12"
+}
+```
+
+```http
+GET /api/books/search?title=clean&limit=10&offset=0
+```
+
 ### Borrowers
 
 - `POST /api/borrowers`
@@ -218,6 +244,28 @@ Required fields on create:
 - `name` (string)
 - `email` (string, unique)
 
+Notes:
+
+- Requires authentication for create/update/delete.
+- Supports pagination via `limit` and `offset`.
+
+Examples:
+
+```http
+POST /api/borrowers
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "name": "Sara Ali",
+  "email": "sara@example.com"
+}
+```
+
+```http
+GET /api/borrowers?limit=10&offset=0
+```
+
 ### Borrowings
 
 - `POST /api/borrowings/checkout`
@@ -229,6 +277,35 @@ Required fields:
 
 - Checkout: `book_id`, `borrower_id`, `due_date`
 - Return: `borrowing_id`
+
+Notes:
+
+- Checkout and return require authentication.
+- `due_date` should be a valid ISO 8601 date.
+
+Examples:
+
+```http
+POST /api/borrowings/checkout
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "book_id": 1,
+  "borrower_id": 2,
+  "due_date": "2026-02-28T00:00:00.000Z"
+}
+```
+
+```http
+POST /api/borrowings/return
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "borrowing_id": 5
+}
+```
 
 ### Reports
 
@@ -247,6 +324,18 @@ Notes:
 - Rate limit: 10 requests per minute per IP for all `/api/reports` endpoints.
 - `RATE_LIMIT_WINDOW_MS` and `RATE_LIMIT_MAX_REQUESTS` are provided in `.env.example` for production configuration.
 - In this taske-home assignment, rate limits are defined inline in code for clarity and simplicity.
+
+Examples:
+
+```http
+GET /api/reports/borrowings/summary?from=2026-01-01T00:00:00.000Z&to=2026-01-31T23:59:59.000Z
+Authorization: Bearer <token>
+```
+
+```http
+GET /api/reports/borrowings/export?from=2026-01-01T00:00:00.000Z&to=2026-01-31T23:59:59.000Z&format=csv
+Authorization: Bearer <token>
+```
 
 ### Pagination
 

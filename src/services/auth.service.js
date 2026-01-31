@@ -12,15 +12,31 @@ class AuthService {
       throw new BadRequestError("Missing required fields");
     }
 
-    const existing = await userRepo.findByEmail(email);
+    // simple email format validation
+    const normalizedEmail = String(email).trim().toLowerCase();
+    if (!normalizedEmail.includes("@") || !normalizedEmail.includes(".")) {
+      throw new BadRequestError("Invalid email format");
+    }
+
+    // password length validation
+    if (String(password).length < 8) {
+      throw new BadRequestError("Password must be at least 8 characters long");
+    }
+
+    const existing = await userRepo.findByEmail(normalizedEmail);
     if (existing) throw new ConflictError("Email already exists");
 
     const password_hash = await bcrypt.hash(password, 10);
 
-    const user = await userRepo.create({ name, email, password_hash });
+    const user = await userRepo.create({
+      name: name.trim(),
+      email: normalizedEmail,
+      password_hash,
+    });
 
     return user;
   }
+
 
   async login(payload) {
     const { email, password } = payload;
