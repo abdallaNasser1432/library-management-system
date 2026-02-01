@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: library_db
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    container_name: library_api
+    restart: unless-stopped
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      # IMPORTANT: inside Docker, DB_HOST should be the service name "db"
+      DB_HOST: db
+    ports:
+      - "${PORT:-3000}:3000"
+    command: sh -c "npm run migrate:latest && npm run seed:run && npm start"
+
+volumes:
+  db_data:

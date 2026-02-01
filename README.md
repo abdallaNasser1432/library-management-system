@@ -130,6 +130,24 @@ http://localhost:3000/api
 
 - `GET /health`
 
+Example:
+
+```http
+GET /health
+```
+
+Response (example):
+
+```json
+{
+  "success": true,
+  "message": "Service is healthy",
+  "data": {
+    "status": "ok"
+  }
+}
+```
+
 ### Auth
 
 - `POST /api/auth/register`
@@ -237,8 +255,23 @@ Content-Type: application/json
 }
 ```
 
-```http
-GET /api/books/search?title=clean&limit=10&offset=0
+Create response (example):
+
+```json
+{
+  "success": true,
+  "message": "Book created",
+  "data": {
+    "id": 1,
+    "title": "Clean Code",
+    "author": "Robert C. Martin",
+    "isbn": "9780132350884",
+    "available_quantity": 3,
+    "shelf_location": "A-12",
+    "created_at": "2026-02-01T10:00:00.000Z",
+    "updated_at": "2026-02-01T10:00:00.000Z"
+  }
+}
 ```
 
 ### Borrowers
@@ -267,13 +300,24 @@ Authorization: Bearer <token>
 Content-Type: application/json
 
 {
-  "name": "Sara Ali",
-  "email": "sara@example.com"
+  "name": "Abdalla Nasser",
+  "email": "abdalla@example.com"
 }
 ```
 
-```http
-GET /api/borrowers?limit=10&offset=0
+Create response (example):
+
+```json
+{
+  "success": true,
+  "message": "Borrower registered",
+  "data": {
+    "id": 1,
+    "name": "Abdalla Nasser",
+    "email": "abdalla@example.com",
+    "registered_at": "2026-02-01T10:00:00.000Z"
+  }
+}
 ```
 
 ### Borrowings
@@ -303,17 +347,26 @@ Content-Type: application/json
 {
   "book_id": 1,
   "borrower_id": 2,
-  "due_date": "2026-02-28T00:00:00.000Z"
+  "due_date": "2026-02-28"
 }
 ```
 
-```http
-POST /api/borrowings/return
-Authorization: Bearer <token>
-Content-Type: application/json
+Checkout response (example):
 
+```json
 {
-  "borrowing_id": 5
+  "success": true,
+  "message": "Book checked out",
+  "data": {
+    "borrowing": {
+      "id": 10,
+      "book_id": 1,
+      "borrower_id": 2,
+      "borrowed_at": "2026-02-01T10:00:00.000Z",
+      "due_date": "2026-02-28T00:00:00.000Z",
+      "returned_at": null
+    }
+  }
 }
 ```
 
@@ -342,13 +395,29 @@ Notes:
 Examples:
 
 ```http
-GET /api/reports/borrowings/summary?from=2026-01-01T00:00:00.000Z&to=2026-01-31T23:59:59.000Z
+GET /api/reports/borrowings/summary?from=2019-01-01&to=2031-01-01
 Authorization: Bearer <token>
 ```
 
-```http
-GET /api/reports/borrowings/export?from=2026-01-01T00:00:00.000Z&to=2026-01-31T23:59:59.000Z&format=csv
-Authorization: Bearer <token>
+Summary response (example):
+
+```json
+{
+  "success": true,
+  "message": "Report generated",
+  "data": {
+    "period": {
+      "from": "2026-01-01T00:00:00.000Z",
+      "to": "2026-01-31T23:59:59.000Z"
+    },
+    "metrics": {
+      "total": 120,
+      "returned": 95,
+      "active": 25,
+      "overdue": 6
+    }
+  }
+}
 ```
 
 ### Pagination
