@@ -331,9 +331,13 @@ Notes:
   - Period export (`/borrowings/export`): `json`
   - Last-month exports (`/borrowings/overdue-last-month/export`, `/borrowings/last-month/export`): `csv`
 - CSV/XLSX responses are returned as downloadable files.
-- Rate limit: 10 requests per minute per IP for all `/api/reports` endpoints.
+- Rate limit: 10 requests per minute per IP for export endpoints only:
+  - `GET /api/reports/borrowings/export`
+  - `GET /api/reports/borrowings/overdue-last-month/export`
+  - `GET /api/reports/borrowings/last-month/export`
+- These endpoints are rate-limited because they trigger heavier export/reporting workloads.
 - `RATE_LIMIT_WINDOW_MS` and `RATE_LIMIT_MAX_REQUESTS` are provided in `.env.example` for production configuration.
-- In this taske-home assignment, rate limits are defined inline in code for clarity and simplicity.
+- In this take-home assignment, rate limits are defined inline in code for clarity and simplicity.
 
 Examples:
 

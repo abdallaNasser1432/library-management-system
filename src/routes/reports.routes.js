@@ -4,7 +4,6 @@ const { reportsLimiter } = require("../middlewares/rateLimit.middleware");
 
 const router = express.Router();
 
-router.use(reportsLimiter);
 
 // Summary analytics
 router.get("/borrowings/summary", async (req, res, next) => {
@@ -18,7 +17,7 @@ router.get("/borrowings/summary", async (req, res, next) => {
 });
 
 // Export borrowings by period: json/csv/xlsx
-router.get("/borrowings/export", async (req, res, next) => {
+router.get("/borrowings/export",reportsLimiter, async (req, res, next) => {
   try {
     const { from, to, format = "json" } = req.query;
 
@@ -48,7 +47,7 @@ router.get("/borrowings/export", async (req, res, next) => {
 });
 
 // Bonus #2: overdue last month export
-router.get("/borrowings/overdue-last-month/export", async (req, res, next) => {
+router.get("/borrowings/overdue-last-month/export",reportsLimiter, async (req, res, next) => {
   try {
     const { format = "csv" } = req.query;
     const rows = await reportService.overdueLastMonthExport();
@@ -73,7 +72,7 @@ router.get("/borrowings/overdue-last-month/export", async (req, res, next) => {
 });
 
 // Bonus #3: all borrowings last month export
-router.get("/borrowings/last-month/export", async (req, res, next) => {
+router.get("/borrowings/last-month/export",reportsLimiter, async (req, res, next) => {
   try {
     const { format = "csv" } = req.query;
     const rows = await reportService.allBorrowingsLastMonthExport();
