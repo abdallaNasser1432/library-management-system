@@ -51,7 +51,7 @@ npm install
 
 ```bash
 # Copy environment template
-cp env.example .env
+cp .env.example .env
 # Edit .env with your database credentials and settings
 ```
 
@@ -67,6 +67,12 @@ CREATE DATABASE library_db;
 
 ```bash
 npm run migrate:latest
+```
+
+3. Seed sample data: (optional)
+
+```bash
+npm run seed:run
 ```
 
 ### 3) Run the Server
@@ -114,7 +120,11 @@ RATE_LIMIT_MAX_REQUESTS=10
 
 ## API Overview
 
-Base URL: `/api`
+### Base URL
+
+```
+http://localhost:3000/api
+```
 
 ### Health Check
 

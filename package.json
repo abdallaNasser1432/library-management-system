@@ -8,7 +8,9 @@
     "start": "node src/server.js",
     "migrate:make": "knex --knexfile knexfile.js migrate:make",
     "migrate:latest": "knex --knexfile knexfile.js migrate:latest",
-    "migrate:rollback": "knex --knexfile knexfile.js migrate:rollback"
+    "migrate:rollback": "knex --knexfile knexfile.js migrate:rollback",
+    "seed:make": "knex --knexfile knexfile.js seed:make",
+    "seed:run": "knex --knexfile knexfile.js seed:run"
   },
   "repository": {
     "type": "git",
