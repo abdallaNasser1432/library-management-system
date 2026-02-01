@@ -194,6 +194,19 @@ npm test
 
 ## API Documentation
 
+### **Postman Collection**
+
+Ready-to-use API collection with all endpoints configured:
+
+**[Postman Collection](docs/library-management-api.postman_collection.json)**
+
+**How to use the Postman Collection:**
+
+1. Download the collection from the link above
+2. Import it into Postman
+3. Set up your environment variables (`Library_url`, `token`)
+4. Start testing the APIs immediately!
+
 ### Base URL
 
 ```
