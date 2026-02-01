@@ -12,6 +12,7 @@ RESTful API built with Node.js, Express, and PostgreSQL for managing books, borr
 - **Rate Limiting**: Protection on heavy reports endpoints
 - **Authentication**: JWT-based access control for protected routes
 - **Docker Support**: Containerized setup with Docker Compose
+- **Unit Testing**: Comprehensive unit tests for Books service
 - **Error Handling**: Unified response format with centralized error handling
 
 ## Tech Stack
@@ -155,7 +156,42 @@ RATE_LIMIT_WINDOW_MS=60000
 RATE_LIMIT_MAX_REQUESTS=10
 ```
 
-## API Overview
+## Testing
+
+Run unit tests:
+
+```bash
+# Run all tests
+npm test
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Database Connection Error**
+   - Ensure PostgreSQL is running
+   - Check `DATABASE_HOST` in `.env` file
+   - For Docker: Use `blog-postgres`
+   - For local: Use `localhost`
+
+2. **Port Already in Use**
+   - Change `PORT` in `.env` file
+   - Or stop the process using port 3000
+
+3. **Authentication Issues**
+   - Ensure JWT_SECRET is set in `.env`
+   - Check if token is included in Authorization header
+
+4. **Docker Issues**
+   - Run `docker compose down -v` to reset containers and volumes
+   - Ensure Docker is running and has sufficient resources
+
+## Database Diagram
+
+![Database Diagram](docs/images/db-diagram.png)
+
+## API Documentation
 
 ### Base URL
 
@@ -470,10 +506,6 @@ List and search endpoints accept:
 - Index on (`borrower_id`, `returned_at`) for active borrowings
 - Index on (`due_date`, `returned_at`) for overdue queries
 - Pagination on all list endpoints
-
-## Database Diagram
-
-![Database Diagram](docs/images/db-diagram.png)
 
 ### Response Format
 

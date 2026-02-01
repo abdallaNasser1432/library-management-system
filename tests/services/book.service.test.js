@@ -1,6 +1,7 @@
 jest.mock("../../src/repositories/book.repository", () => ({
   findByIsbn: jest.fn(),
   updateById: jest.fn(),
+  deleteById: jest.fn(),
 }));
 
 jest.mock("../../src/repositories/borrowing.repository", () => ({
@@ -81,4 +82,42 @@ describe("BookService.updateBook", () => {
     });
     expect(result).toEqual({ id: 1, title: "Updated" });
   });
+});
+
+
+describe("BookService.deleteBook", () => {
+  const borrowingRepo = require("../../src/repositories/borrowing.repository");
+  const bookRepo = require("../../src/repositories/book.repository");
+  const { BadRequestError, NotFoundError } = require("../../src/utils/errors");
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test("throws BadRequestError if book has active borrowings", async () => {
+    borrowingRepo.hasActiveByBookId.mockResolvedValue(true);
+
+    await expect(BookService.deleteBook(1))
+      .rejects.toBeInstanceOf(BadRequestError);
+  });
+
+  test("throws NotFoundError if book does not exist", async () => {
+    borrowingRepo.hasActiveByBookId.mockResolvedValue(false);
+    bookRepo.deleteById.mockResolvedValue(null);
+
+    await expect(BookService.deleteBook(999))
+      .rejects.toBeInstanceOf(NotFoundError);
+  });
+
+  test("deletes book successfully", async () => {
+    borrowingRepo.hasActiveByBookId.mockResolvedValue(false);
+    bookRepo.deleteById.mockResolvedValue(true);
+
+    const result = await BookService.deleteBook(1);
+
+    expect(borrowingRepo.hasActiveByBookId).toHaveBeenCalledWith(1);
+    expect(bookRepo.deleteById).toHaveBeenCalledWith(1);
+    expect(result).toBe(true);
+  });
+  
 });
