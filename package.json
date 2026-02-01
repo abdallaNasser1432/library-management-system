@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
+    "test": "jest",
     "migrate:make": "knex --knexfile knexfile.js migrate:make",
     "migrate:latest": "knex --knexfile knexfile.js migrate:latest",
     "migrate:rollback": "knex --knexfile knexfile.js migrate:rollback",
@@ -35,6 +36,7 @@
     "pg": "^8.17.2"
   },
   "devDependencies": {
+    "jest": "^30.2.0",
     "nodemon": "^3.1.11"
   }
 }

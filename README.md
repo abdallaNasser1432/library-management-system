@@ -11,6 +11,7 @@ RESTful API built with Node.js, Express, and PostgreSQL for managing books, borr
 - **Reporting & Exports**: Borrowing analytics and CSV/XLSX exports
 - **Rate Limiting**: Protection on heavy reports endpoints
 - **Authentication**: JWT-based access control for protected routes
+- **Docker Support**: Containerized setup with Docker Compose
 - **Error Handling**: Unified response format with centralized error handling
 
 ## Tech Stack
@@ -26,8 +27,44 @@ RESTful API built with Node.js, Express, and PostgreSQL for managing books, borr
 
 - Node.js and npm
 - PostgreSQL
+- Docker and Docker Compose (for containerized setup)
 
-### 1) Installation
+### Option A) Run with Docker (Recommended)
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/abdallaNasser1432/library-management-system.git
+```
+
+2. Move into the project folder:
+
+```bash
+cd library-management-system
+```
+
+3. Configure environment variables:
+
+```bash
+# Copy environment template
+cp .env.example .env
+# Edit .env with your database credentials and settings
+```
+
+4. Build and run:
+
+```bash
+docker compose up --build
+```
+
+Notes:
+
+- Migrations and seed data run automatically on container startup.
+- API will be available at `http://localhost:3000`.
+
+### Option B) Run Locally
+
+#### 1) Installation
 
 1. Clone the repository:
 
@@ -55,7 +92,7 @@ cp .env.example .env
 # Edit .env with your database credentials and settings
 ```
 
-### 2) Database Setup
+#### 2) Database Setup
 
 1. Create the database in your PostgreSQL Server:
 
@@ -75,7 +112,7 @@ npm run migrate:latest
 npm run seed:run
 ```
 
-### 3) Run the Server
+#### 3) Run the Server
 
 Development (watch mode):
 
