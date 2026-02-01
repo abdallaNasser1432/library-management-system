@@ -1,6 +1,6 @@
 # Library Management System
 
-RESTful API built with Node.js, Express, and PostgreSQL for managing books, borrowers, and borrowing operations.
+Production-ready RESTful API for library operations, built with Node.js, Express, and PostgreSQL. It provides secure, transactional workflows for managing books, borrowers, and lending activity with reporting and export capabilities.
 
 ## Features
 
@@ -49,7 +49,6 @@ cd library-management-system
 ```bash
 # Copy environment template
 cp .env.example .env
-# Edit .env with your database credentials and settings
 ```
 
 4. Build and run:
@@ -158,6 +157,8 @@ RATE_LIMIT_MAX_REQUESTS=10
 
 ## Testing
 
+Tests are written for the BookService module using Jest with mocked repositories.
+
 Run unit tests:
 
 ```bash
@@ -172,7 +173,7 @@ npm test
 1. **Database Connection Error**
    - Ensure PostgreSQL is running
    - Check `DATABASE_HOST` in `.env` file
-   - For Docker: Use `blog-postgres`
+   - For Docker: Use `db`
    - For local: Use `localhost`
 
 2. **Port Already in Use**
