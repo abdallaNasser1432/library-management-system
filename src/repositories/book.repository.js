@@ -54,8 +54,8 @@ class BookRepository {
     const q = db("books").select("*");
 
     if (isbn) q.where("isbn", isbn);
-    if (title) q.andWhereILike("title", `%${title}%`);
-    if (author) q.andWhereILike("author", `%${author}%`);
+    if (title) q.andWhereILike("title", `${title}%`);
+    if (author) q.andWhereILike("author", `${author}%`);
 
     return q.orderBy("id", "desc").limit(limit).offset(offset);
   }
