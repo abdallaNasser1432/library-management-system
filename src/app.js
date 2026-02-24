@@ -1,4 +1,7 @@
+require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
+const helmet = require("helmet");
 const responseMiddleware = require("./middlewares/response.middleware");
 const authMiddleware = require("./middlewares/auth.middleware");
 
@@ -10,9 +13,16 @@ const authRoutes = require("./routes/auth.routes");
 
 const app = express();
 
+app.use(cors({
+  origin: process.env.NODE_ENV === "production"
+    ? process.env.CORS_ORIGIN
+    : "*",
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.use(helmet());
 app.use(express.json());
 app.use(responseMiddleware);
-
 
 // Health check (using unified template)
 app.get("/health", (req, res) => {
@@ -24,7 +34,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/books", booksRoutes);
 app.use("/api/borrowers", borrowersRoutes);
 app.use("/api/borrowings", borrowingsRoutes);
-app.use("/api/reports",authMiddleware, reportsRoutes);
+app.use("/api/reports", authMiddleware, reportsRoutes);
 
 // 404 handler
 app.use((req, res) => {
